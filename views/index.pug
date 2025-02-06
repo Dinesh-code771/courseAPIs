@@ -1,0 +1,10 @@
+doctype html 
+html 
+    head
+        title= title
+    body
+        h1= message
+        p Welcome to #{title}
+        ul 
+            each val in list
+                li= val.name

@@ -1,0 +1,10 @@
+{
+  "name": "production",
+  "port": 6000,
+  "database": {
+    "host": "procution",
+    "port": 25017,
+    "name": "production",
+    "url": "mongodb://production:25017/production"
+  }
+}
