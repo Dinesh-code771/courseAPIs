@@ -38,7 +38,7 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 // Middleware to parse the body of the reques
 app.use(express.json());
-app.use(isAutenicated);
+// app.use(isAutenicated);
 app.use(express.static("public"));
 app.use("/api/auth", authRouter);
 app.use("/api/courses", courseRouter);

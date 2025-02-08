@@ -18,15 +18,22 @@ const Course = mongoose.model("Course", courseSchema, "courses"); // Explicit co
 //create schema
 const schema = Joi.object({
   courseName: Joi.string().min(3).required(),
+  authorName: Joi.string().min(3).required(),
+  tags: Joi.array().items(Joi.string().required()),
+  isPublished: Joi.boolean().required(),
+  rating: Joi.number().required().min(0).max(5),
 });
 
 // GET request to get all courses
 router.get("/", async (req, res) => {
   try {
     const courseName = req.query.courseName;
-    console.log(courseName, "courseName");
+    const pageNumber = req.query.pageNumber;//3
+    const pageSize = req.query.pageSize; //10
     if (!courseName) {
-      const data = await Course.find({});
+      const data = await Course.countDocuments({ rating: { $gte: 4 } });
+     
+
       console.log(data, "data");
       res.json(data);
       return;
