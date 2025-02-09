@@ -139,7 +139,6 @@
 //findByIdAndRemove() //find document by id and remove
 //findByIdAndReplace() //find document by id and replace
 
-
 // comparison query operators
 // $eq: equal to
 // $ne: not equal to
@@ -177,7 +176,7 @@
 //example
 //db.posts.find({$and: [{age: {$gt: 30}}, {age: {$lt: 40}}]}) //find documents with age greater than 30 and less than 40
 //db.posts.find({$or: [{age: {$gt: 30}}, {age: {$lt: 40}}]}) //find documents with age greater than 30 or less than 40
-//db.posts.find({$not: {age: {$gt: 30}}}) //find documents with age not greater than 3 
+//db.posts.find({$not: {age: {$gt: 30}}}) //find documents with age not greater than 3
 
 //array query operators
 // $all: all
@@ -206,14 +205,12 @@
 //not contains
 //db.posts.find({name: {$not: {$regex: 'o'}}}) //find documents with name not containing o
 
-
 // count
 //db.posts.countDocuments() //count all documents
 //db.posts.countDocuments({age: {$gt: 30}}) //count documents with age greater than 30
 
 //distinct
 //db.posts.distinct('name') //find distinct names
-
 
 //pagination
 //db.posts.find().skip(2).limit(2) //skip 2 documents and limit 2 documents
@@ -224,8 +221,6 @@
 //const pagesize = 2;
 //const skip = (pagenumber - 1) * pagesize;
 //db.posts.find().skip(skip).limit(pagesize) //skip 2 documents and limit 2 documents
-
-
 
 //update
 
@@ -251,5 +246,186 @@
 //findByIdAndUpdate
 //updatePost('66b40254311d2d6162a10775', {name: 'John Doe'});
 
+//validation at mongoDB
+//npm i joi
+//create a schema
+// const mongoose = require('mongoose');
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     author: { type: String, required: true },
+//     tags: { type: [String], required: true },
+//     isPublished: { type: Boolean, required: true },
+//     price: { type: Number, required: true },
+//     rating: { type: Number, required: true },
+// });
 
+// const course = new Course({
+//     name: 'Node.js Course',
+//     author: 'John Doe',
+//     tags: ['node', 'backend'],
+//     isPublished: true,
+//     price: 10,
+//     rating: 4.5 });
 
+//  await courseSchema.validate();
+// console.log(result);
+
+// add callback
+
+// const course = new Course({
+//     name: 'Node.js Course',
+//     author: 'John Doe',
+//     tags: ['node', 'backend'],
+//     isPublished: true,
+//     price: 10,
+//     rating: 4.5 });
+
+// course.save().then((result) => {
+//     console.log(result);
+// }).catch((err) => {
+//     console.log(err);
+// });
+
+// course.validate().then((result) => {
+//     console.log(result);
+// }).catch((err) => {
+//     console.log(err);
+// });
+
+//we need joi and mongoose
+
+//built in validators
+//required
+//min
+//max
+//enum
+//match
+//validate
+//examples
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true,minlength: 5,maxlength: 255 },
+
+//     author: { type: String, required: true },
+//     tags: { type: [String], required: true },
+//     isPublished: { type: Boolean, required: true },
+//     price: { type: Number, required: function() {
+//         return this.isPublished;
+//     } },
+//     rating: { type: Number, required: true },
+// });
+
+//enum example
+// const courseSchema = new mongoose.Schema({
+//     category : { type: String, required: true,enum: ['web', 'mobile', 'network'] },
+// });
+
+//match example
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true,match: /^[a-zA-Z0-9]{3,30}$/ },
+// });
+
+//custom validators
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true,validate: {
+//         validator: function(v) {
+//             return v && v.length > 3;
+//         },
+//     } },
+// });
+
+//we can pass empty array to the tag to by pass required validation so that is the reason we are creating
+//custom validator
+///example for tags array
+// const courseSchema = new mongoose.Schema({
+//     tags: { type: [String], validate: {
+//         validator: function(v) {
+//             return v && v.length > 0;
+//         },
+//         message: 'course should have at least one tag'
+//     } },
+
+// async validators
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true,validate: {
+//isAsync: true,
+//         validator: function(v,callback) {
+//             setTimeout(() => {
+//do some async operation
+//                 callback(v && v.length > 3);
+//             }, 4000);
+//         },
+//     } },
+// });
+
+//validation errors
+//to show multiple errors we need to use array of errors
+// async function createCourse() {
+//     const course = new Course({
+//         name: 'Node.js Course',
+//         author: 'John Doe',
+//         tags: ['node', 'backend'],
+//         isPublished: true,
+//     });
+//     try {
+//         const result = await course.save();
+//         console.log(result);
+//     } catch (ex) {
+//         for(field in ex.errors)  //ex.errors is an object
+//             console.log(ex.errors[field].message);
+//     }
+// }
+
+//schema type object
+// const courseSchema = new mongoose.Schema({
+//     author: {
+//         name: String,
+//         bio: String,
+//         lowerCase: true,
+//              trim:true}
+
+//
+//     tags: { type: [String], required: true },
+//     date: { type: Date, default: Date.now },
+//     isPublished: { type: Boolean, default: false },
+//price: { type: Number, required: true,min: 10,max: 200,get: v => Math.round(v), set: v => Math.round(v) },
+// });
+
+//mongoose middleware
+//pre middleware
+//post middleware
+//validation middleware
+//error middleware
+
+//example
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     author: { type: String, required: true },
+//     tags: { type: [String], required: true },
+//     isPublished: { type: Boolean, required: true },
+// });
+
+//pre middleware
+//courseSchema.pre('save', function(next) {
+//     this.isPublished = true;
+//     next();
+// });
+
+//post middleware
+//courseSchema.post('save', function(doc, next) {
+//     console.log('post middleware');
+//     next();
+// });
+
+//validation middleware
+// const courseSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     author: { type: String, required: true },
+//     tags: { type: [String], required: true },
+//     isPublished: { type: Boolean, required: true },
+// });
+
+//validation middleware
+//courseSchema.validate();
+
+//error middleware
+//courseSchema.validate();
