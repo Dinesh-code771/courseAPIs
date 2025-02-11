@@ -429,3 +429,87 @@
 
 //error middleware
 //courseSchema.validate();
+
+//mongoose relations ( modellin Relationships) here are the methods to create relations
+// 1: using references (normalization) ---> consistency
+//example
+
+// 2: using embedded documents (denormalization) ---> performance
+
+//hybrid approach
+
+//referencing documents
+//const Author = mongoose.model('Author', new mongoose.Schema({
+//     name: String,
+//     bio: String,
+//     lowerCase: true,
+//     trim:true}
+// }));
+
+//const Course = mongoose.model('Course', new mongoose.Schema({
+//     name: String,
+//     author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author' }
+// }));
+
+//poullation
+// async function listcourses() {
+//     const courses = await Course.find().populate('author',"name -_id").select('name author');
+//     console.log(courses);
+//  }
+//to oexclude the _id we can use -_id to include the name add properties after ,
+//listcourses();
+// u get null values for author because we are not populating the author
+
+
+
+//embedded documents
+// const authorSchema = new mongoose.Schema({
+//     name: String,
+//     bio: String,
+//     lowerCase: true,
+//     trim:true}
+// });
+
+// const courseSchema = new mongoose.Schema({
+//     name: String,
+//     author: { type: authorSchema, required: true }
+// });
+
+// const course = new Course({
+//     name: 'Node.js Course',
+//     author: { name: 'John Doe', bio: 'John Doe is a software engineer' }
+// });
+//update authname
+//find course using couse id
+//course.author.name = 'Jane Doe';
+//await course.save();
+
+//updare subdocument directly
+// await course.update({_id:courseId},{$set:{'author.name':'Jane Doe'}});
+
+//unset operation
+// await course.update({_id:courseId},{$unset:{'author':''}});
+
+
+//Array of subdocuments
+// const courseSchema = new mongoose.Schema({
+//     name: String,
+//     author: [authorSchema]
+
+// });
+//instead one you pass multiple authers
+
+///you can use push method to add new author
+// course.author.push(new Author({name: 'Jane Doe', bio: 'Jane Doe is a software engineer'}));
+// await course.save();
+
+//you can use unshift method to add new author
+// course.author.unshift({name: 'Jane Doe', bio: 'Jane Doe is a software engineer'});
+// await course.save();
+
+
+//remove operation
+//const course = await Course.findById(courseId); 
+//const author = course.author.id(authorId)
+//author.remove();
+//await course.save();

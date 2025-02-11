@@ -4,6 +4,7 @@ const path = require("path");
 const courseRouter = require("./apis/course");
 const isAutenicated = require("./logger");
 const authRouter = require("./apis/auth");
+const authorRouter = require("./apis/author");
 // const os = require("os");
 // const cluster = require("cluster");
 const mongoose = require("mongoose");
@@ -42,6 +43,7 @@ app.use(express.json());
 app.use(express.static("public"));
 app.use("/api/auth", authRouter);
 app.use("/api/courses", courseRouter);
+app.use("/api/v1/authors", authorRouter);
 
 // run the server
 app.listen(5000, () => console.log("Server is running on port 5000"));

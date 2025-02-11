@@ -1,67 +1,20 @@
 const express = require("express");
 const path = require("path");
-const { listen } = require("express/lib/application");
 const { Worker } = require("worker_threads");
 const router = express.Router();
-const mongoose = require("mongoose");
 const Joi = require("joi");
-
-// let courses = [
-//   { id: 1, name: "course1" },
-//   { id: 2, name: "course2" },
-//   { id: 3, name: "course3" },
-// ];
-//mondab schema
-const courseSchema = new mongoose.Schema({
-  courseName: { type: String, required: true, minlength: 3, maxlength: 255 },
-  authorName: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 255,
-    match: /^[a-zA-Z]{3,30}$/
-  },
-  tags: {
-    type: [String],
-    required: true,
-    validate: {
-      validator: function (v) {
-        return v && v.length > 0;
-      },
-      message: "tags should have at least one tag",
-    },
-  },
-  isPublished: {
-    type: Boolean,
-    required: true,
-  },
-  rating: { type: Number, required: true, min: 0, max: 5 },
-  category: {
-    type: String,
-    required: false,
-    enum: ["web", "mobile", "network"],
-  },
-});
-const Course = mongoose.model("Course", courseSchema, "courses"); // Explicit collection name //name , schema , collection name
-
-//create schema
-const schema = Joi.object({
-  courseName: Joi.string().min(3).required(),
-  authorName: Joi.string().min(3).required(),
-  tags: Joi.array().required(),
-  isPublished: Joi.boolean().required(),
-  rating: Joi.number().required().min(0).max(5),
-  category: Joi.string().optional().valid("web", "mobile", "network"),
-});
+const { Course, validateReqCourseSchema } = require("../modals/courseModal");
+console.log(validateReqCourseSchema, "validateReqCourseSchema");
 
 // GET request to get all courses
 router.get("/", async (req, res) => {
   try {
     const courseName = req.query.courseName;
-    const pageNumber = req.query.pageNumber; //3
-    const pageSize = req.query.pageSize; //10
+
     if (!courseName) {
-      const data = await Course.countDocuments({ rating: { $gte: 4 } });
+      const data = await Course.find({})
+        .populate("author", "name -_id")
+        .select("courseName author");
 
       console.log(data, "data");
       res.json(data);
@@ -79,28 +32,25 @@ router.get("/", async (req, res) => {
 // post request to add a new course
 router.post("/", async (req, res) => {
   try {
-    const validateRsult = schema.validate(req.body);
+    const validateRsult = validateReqCourseSchema.validate(req.body);
     if (validateRsult.error) {
       res.status(400).send(validateRsult.error.details[0].message);
       return;
     }
     console.log(req.body);
-    const newCourse = new Course({
-      courseName: req.body.courseName,
-      authorName: "233",
-      tags: [],
-    }); //create a new course document
+    const newCourse = new Course(req.body); //create a new course document
     //validate the new course and excute my funtion after validation
 
     await newCourse.save(); //save to the database
     res.send(newCourse); //send the document back to the client
   } catch (err) {
-    let errorMessage = []
-    for(feild in err.errors){
+    let errorMessage = [];
+    for (feild in err.errors) {
       console.log(`error from backend${err.errors[feild].message}`);
       errorMessage.push(err.errors[feild].message);
     }
-    res.status(500).send(errorMessage);
+    console.log(err, "erroe");
+    res.status(500).send(err);
   }
 });
 
@@ -122,7 +72,7 @@ router.delete("/:id", async (req, res) => {
 // put request to update a course
 router.put("/:id", async (req, res) => {
   try {
-    const validateResult = schema.validate(req.body);
+    const validateResult = validateReqCourseSchema.validate(req.body);
     //validate the user input
     if (validateResult.error) {
       res.status(400).send(validateResult.error.details[0].message);
