@@ -3,10 +3,12 @@
     "config": "^3.3.12",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "fawn": "^2.1.5",
     "joi": "^17.13.3",
+    "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.0",
-    "mongoose": "^8.9.6",
+    "mongoose": "^5.13.23",
     "pug": "^3.0.3"
   }
 }

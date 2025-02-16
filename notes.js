@@ -513,3 +513,100 @@
 //const author = course.author.id(authorId)
 //author.remove();
 //await course.save();
+
+
+
+//transaction means a group of operations on the database as a single unit
+//if any operation fails, the entire transaction is rolled back
+//if all operations succeed, the transaction is committed
+//transaction is atomic
+//transaction is consistent
+//transaction is isolated
+//transaction is durable
+
+//install fawn
+//npm i fawn
+
+
+// new Fawn.Task().save("collectionName",rental).update("movies",{_id:rental.movieId},{$inc:{numberInStock:-1}}).run();
+
+//wrap this in try catch block
+//try {
+//    await new Fawn.Task().save("collectionName",rental).update("movies",{_id:rental.movieId},{$inc:{numberInStock:-1}}).run();
+//} catch (error) {
+//    console.log(error);b 
+//}
+
+
+//validate objecct id
+
+// function validateObjectId(req,res,next){
+//     if(!mongoose.Types.ObjectId.isValid(req.params.id))
+//         return res.status(400).send('Invalid ID.');
+//     next();
+// }
+
+// const Joi = require('joi');
+// const mongoose = require('mongoose');
+// const JoiObjectId = require('joi-objectid')(Joi);
+
+// const schema = Joi.object({
+//     id: JoiObjectId().required()
+// });
+
+// const result = schema.validate({ id: '66b40254311d2d6162a10775' });
+// console.log(result);
+
+//handling and logging errors
+//send error to client
+// log the exception
+
+
+//wrap in try catch block all the code that can throw an error
+
+//moe erros into some centralized error handling middleware
+
+// app.use(function(err,req,res,next){
+//     //log exception
+//     console.log(err.message);
+//     //send to client
+//     res.status(500).send('Something failed.');
+// });
+
+/// add the above mdlle after all the routes
+//in catch use next(err) to pass the error to the middleware
+
+//in catch pass the error to the next middleware
+//next(err)
+
+//in the middleware log the error
+//console.log(err.message);
+
+
+//reomve try catch block from the routes
+
+
+// function asyncMiddleware(handler){
+//     return async (req,res,next)=>{
+//         try {
+//             await handler(req,res);
+//         } catch (ex) {
+//             next(ex);
+//         }
+//     }
+
+//router.get('/',asyncMiddleware(async (req,res )=>{
+//     const courses = await Course.find();
+//     res.send(courses);
+// }));
+
+//npm i express-async-errors
+
+//require('express-async-errors');
+
+//use the above in the routes
+//router.get('/',async (req,res )=>{
+//     const courses = await Course.find();
+//     res.send(courses);
+// });
+
