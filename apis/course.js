@@ -4,7 +4,7 @@ const { Worker } = require("worker_threads");
 const router = express.Router();
 const Joi = require("joi");
 const { Course, validateReqCourseSchema } = require("../modals/courseModal");
-console.log(validateReqCourseSchema, "validateReqCourseSchema");
+
 
 // GET request to get all courses
 router.get("/", async (req, res) => {
